@@ -8,6 +8,8 @@ type Fact = {
   value: string;
   /** if set, the value becomes a link to this URL */
   href?: string;
+  /** draw the value in horizontal color bands (see StripedText) */
+  striped?: boolean;
 };
 
 export type AboutMeProps = {
@@ -24,13 +26,13 @@ export type AboutMeProps = {
  */
 export default function AboutMe({
   fullName = "Tran Minh Hieu",
-  birthplace = "Earth",
+  birthplace = "EARTH",
   school = "Vietnamese-German University",
   schoolUrl = "https://vgu.edu.vn",
 }: AboutMeProps) {
   const facts: Fact[] = [
     { label: "Hi, my name is", value: fullName },
-    { label: "I was born in a lovely place called", value: birthplace },
+    { label: "I was born in a lovely place called", value: birthplace, striped: true },
     { label: "I've done my Bachelor in", value: school, href: schoolUrl },
   ];
 
@@ -61,6 +63,8 @@ export default function AboutMe({
               <dd className="about__value">
                 {fact.href ? (
                   <EchoLink href={fact.href}>{fact.value}</EchoLink>
+                ) : fact.striped ? (
+                  <StripedText>{fact.value}</StripedText>
                 ) : (
                   fact.value
                 )}
@@ -70,6 +74,40 @@ export default function AboutMe({
         </dl>
       </div>
     </section>
+  );
+}
+
+/**
+ * Color bands of the striped text, top to bottom. Each copy of the text is cut
+ * off at `height`; copies higher up sit on top, so each shows as one band.
+ * The text itself (blue, see .about__stripes) shows below the last band.
+ */
+const STRIPES = [
+  { color: "#d61c5b", height: "34%" }, // pink
+  { color: "#f1573f", height: "50%" }, // red
+  { color: "#feb213", height: "66%" }, // orange
+  { color: "#6abc4e", height: "80%" }, // green
+];
+
+/**
+ * Text drawn in horizontal color bands: colored copies, each cut off at a
+ * different height, stacked on top of the text (see .about__stripe).
+ */
+function StripedText({ children }: { children: string }) {
+  return (
+    <span className="about__stripes">
+      {children}
+      {STRIPES.map((stripe, i) => (
+        <span
+          key={stripe.color}
+          className="about__stripe"
+          aria-hidden="true"
+          style={{ color: stripe.color, height: stripe.height, zIndex: STRIPES.length - i }}
+        >
+          {children}
+        </span>
+      ))}
+    </span>
   );
 }
 

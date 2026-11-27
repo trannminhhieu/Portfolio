@@ -44,7 +44,9 @@
    `transform` used by the slide-in animation, so the two combine. */
 @media (max-width: 1024px) and (orientation: portrait), (max-height: 500px) {
   .about__person {
-    translate: 0 38%;
+    /* at least 260px: on short phones (iPhone SE with Safari's bars ≈ 548px tall)
+       38% alone isn't enough to clear the text */
+    translate: 0 max(38%, 260px);
   }
 }
 /* landscape phones are too short for that alone: tuck it further into the corner */
@@ -101,6 +103,26 @@
 /* school name (third fact) in orange */
 .about__fact--3 .about__value {
   color: #e8590c;
+}
+
+/* birthplace: the text in horizontal color bands (pink, red, orange, green,
+   blue). The copies are full-width so they wrap exactly like the text. */
+.about__stripes {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  color: #2599d8; /* blue: the bottom band */
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+}
+
+.about__stripe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 /* solar system behind the birthplace: a full-screen layer, so it is always
