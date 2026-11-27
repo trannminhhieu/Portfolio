@@ -60,7 +60,7 @@ const CHAPTERS: Chapter[] = [
  * and its text on the other, switching sides every chapter (on phones the
  * line moves to the left and the text goes under the photo).
  * Each one fades in, holds, then fades out (upwards) before the next fades in;
- * the last one stays. One screen of scrolling per chapter.
+ * the last one stays. SCROLL_PER_SLOT of scrolling per chapter.
  *
  * Before the first chapter there's one more screen: a big heading (see Intro).
  * The line and the "Frisbee" label fade in as it leaves.
@@ -97,8 +97,8 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
       id="frisbee"
       ref={ref}
       className={reduceMotion ? "frisbee frisbee--static" : "frisbee"}
-      // extra height = scroll distance: one screen for the intro and each chapter
-      style={reduceMotion ? undefined : { height: `${slots * 100}svh` }}
+      // the pinned screen, plus the scroll distance for the intro and each chapter
+      style={reduceMotion ? undefined : { height: `${100 + slots * SCROLL_PER_SLOT}svh` }}
     >
       <div className="frisbee__pin" ref={pinRef}>
         <Intro
@@ -137,6 +137,9 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
     </section>
   );
 }
+
+/** How much scrolling (in % of the screen's height) the intro and each chapter get */
+const SCROLL_PER_SLOT = 125;
 
 /** The heading; its last word flies up and becomes the "Frisbee" label. */
 const HEADING_LEAD = "I REALLY LOVE";
