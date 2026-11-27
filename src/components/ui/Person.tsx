@@ -19,6 +19,8 @@ export interface PersonProps {
   background?: string;
   /** Size multiplier for the illustration (1 = original size, 2 = twice as big) */
   scale?: number;
+  /** Rotation in degrees (positive = clockwise, negative = counter-clockwise) */
+  rotate?: number;
   /** Height of the stage (defaults to full viewport height) */
   height?: CSSProperties["height"];
   className?: string;
@@ -42,6 +44,7 @@ const Person: React.FC<PersonProps> = ({
   colors,
   background = "#fcf8db",
   scale = 1,
+  rotate = 0,
   height = "100vh",
   className = "",
   style,
@@ -58,6 +61,7 @@ const Person: React.FC<PersonProps> = ({
     "--yellow": c.yellow,
     "--dark-yellow": c.darkYellow,
     "--person-scale": scale,
+    "--person-rotate": `${rotate}deg`,
     backgroundColor: background,
     height,
     ...style,

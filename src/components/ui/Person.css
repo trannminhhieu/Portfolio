@@ -28,8 +28,9 @@
     radial-gradient(var(--light-skin) 70%, transparent 0) 0 -50px / 100% 130% no-repeat;
   border-radius: 50%;
   translate: -90px 60px;
-  /* scale around the middle of the whole figure (head sits above the body box) */
+  /* scale and rotate around the middle of the whole figure (head sits above the body box) */
   scale: var(--person-scale, 1);
+  rotate: var(--person-rotate, 0deg);
   transform-origin: 100px -75px;
 }
 

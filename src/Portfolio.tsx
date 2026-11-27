@@ -1,5 +1,6 @@
 import NameTag from "./components/NameTag";
 import Hero from "./components/Hero";
+import AboutMe from "./components/AboutMe";
 import { THEME } from "./theme";
 import "./styles/global.css";
 
@@ -15,6 +16,7 @@ export default function Portfolio() {
     >
       <NameTag name="tr.mihi" />
       <Hero />
+      <AboutMe />
     </div>
   );
 }
