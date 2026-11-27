@@ -59,12 +59,12 @@
     /* ear */
     135px 0 var(--light-skin),
     /* front hair */
-    120px -40px 0 10px var(--yellow),
-    80px -60px var(--yellow),
-    30px -100px 0 15px var(--yellow),
+    120px -40px 0 10px var(--hair),
+    80px -60px var(--hair),
+    30px -100px 0 15px var(--hair),
     /* back hair */
-    25px -50px 0 10px var(--dark-yellow),
-    80px -70px 0 10px var(--dark-yellow);
+    25px -50px 0 10px var(--dark-hair),
+    80px -70px 0 10px var(--dark-hair);
 }
 
 /* head */
@@ -75,7 +75,7 @@
   aspect-ratio: 1 / 1;
   background:
     /* hair */
-    linear-gradient(-150deg, var(--yellow) 29%, transparent 0),
+    linear-gradient(-150deg, var(--hair) 29%, transparent 0),
     /* nose */
     linear-gradient(100deg, var(--skin) 35%, transparent calc(35% + 1px)) 0 70px no-repeat,
     linear-gradient(100deg, var(--skin) 35%, transparent calc(35% + 1px)),
@@ -112,7 +112,7 @@
   width: 330px;
   height: 120px;
   border-radius: 0 0 0 100%;
-  box-shadow: inset 120px 0 0 -50px var(--yellow);
+  box-shadow: inset 120px 0 0 -50px var(--hair);
 }
 
 /* glasses */

@@ -8,8 +8,8 @@ export interface PersonColors {
   skin?: string;
   darkSkin?: string;
   lightSkin?: string;
-  yellow?: string;
-  darkYellow?: string;
+  hair?: string;
+  darkHair?: string;
 }
 
 export interface PersonProps {
@@ -34,8 +34,8 @@ const defaultColors: Required<PersonColors> = {
   skin: "#f77676",
   darkSkin: "#cc3c40",
   lightSkin: "#f3af9f",
-  yellow: "#f6d359",
-  darkYellow: "#e9a964",
+  hair: "#6b4226", // front hair: brown
+  darkHair: "#2b1a12", // back hair: black-brown
 };
 
 type CSSVars = CSSProperties & Record<`--${string}`, string | number | undefined>;
@@ -58,8 +58,8 @@ const Person: React.FC<PersonProps> = ({
     "--skin": c.skin,
     "--dark-skin": c.darkSkin,
     "--light-skin": c.lightSkin,
-    "--yellow": c.yellow,
-    "--dark-yellow": c.darkYellow,
+    "--hair": c.hair,
+    "--dark-hair": c.darkHair,
     "--person-scale": scale,
     "--person-rotate": `${rotate}deg`,
     backgroundColor: background,
@@ -72,7 +72,7 @@ const Person: React.FC<PersonProps> = ({
       className={`person-stage ${className}`.trim()}
       style={stageStyle}
       role="img"
-      aria-label="Illustration of a smiling person with blonde hair and blue glasses"
+      aria-label="Illustration of a smiling person with brown hair and blue glasses"
     >
       <div className="person">
         <div className="person__head">
