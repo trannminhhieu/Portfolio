@@ -3,6 +3,7 @@
 .about {
   position: relative;
   height: 100vh;
+  height: 100svh; /* svh: the visible height with the mobile address bar shown */
   background: #ffffff;
   color: #000000;
 }
@@ -11,6 +12,7 @@
   position: sticky;
   top: 0;
   height: 100vh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,6 +36,22 @@
   z-index: 0;
   pointer-events: none;
   transform: translateX(calc(50vw - 70px));
+}
+
+/* portrait phones/tablets and short landscape phones: the text fills the middle
+   of the screen, so move the figure down to peek in from the bottom-right
+   corner instead of sitting behind the text. `translate` is separate from the
+   `transform` used by the slide-in animation, so the two combine. */
+@media (max-width: 1024px) and (orientation: portrait), (max-height: 500px) {
+  .about__person {
+    translate: 0 38%;
+  }
+}
+/* landscape phones are too short for that alone: tuck it further into the corner */
+@media (max-height: 500px) {
+  .about__person {
+    translate: 12% 45%;
+  }
 }
 
 /* keep the text above the person */
@@ -66,7 +84,7 @@
 
 .about__label {
   font-family: "IBM Plex Mono", monospace;
-  font-size: 20px;
+  font-size: clamp(14px, 3.6vw, 20px);
   color: rgba(0, 0, 0, 0.5);
 }
 
@@ -74,7 +92,8 @@
   margin: 0;
   font-family: "Fraunces", serif;
   font-weight: 500;
-  font-size: clamp(44px, 9vw, 128px);
+  /* min(…vh) keeps it from overflowing short landscape screens */
+  font-size: clamp(32px, min(9vw, 14vh), 128px);
   line-height: 1.05;
   overflow-wrap: anywhere;
 }

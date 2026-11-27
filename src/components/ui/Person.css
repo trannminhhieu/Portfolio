@@ -29,7 +29,8 @@
   border-radius: 50%;
   translate: -90px 60px;
   /* scale and rotate around the middle of the whole figure (head sits above the body box) */
-  scale: var(--person-scale, 1);
+  /* --person-fit shrinks the figure on small screens (set below) */
+  scale: calc(var(--person-scale, 1) * var(--person-fit, 1));
   rotate: var(--person-rotate, 0deg);
   transform-origin: 100px -75px;
 }
@@ -124,4 +125,12 @@
   border: 2px solid var(--blue);
   border-radius: 50%;
   filter: drop-shadow(75px 0 var(--blue));
+}
+
+/* ----- fit smaller screens ----- */
+@media (max-width: 1024px), (max-height: 700px) {
+  .person-stage { --person-fit: 0.75; }
+}
+@media (max-width: 600px), (max-height: 450px) {
+  .person-stage { --person-fit: 0.5; }
 }

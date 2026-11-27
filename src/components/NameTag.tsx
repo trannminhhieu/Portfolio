@@ -3,8 +3,8 @@ export default function NameTag({ name = "Placeholder Name" }: { name?: string }
     <div
       style={{
         position: "fixed",
-        top: 32,
-        left: 32,
+        top: "clamp(16px, 4vw, 32px)",
+        left: "clamp(16px, 4vw, 32px)",
         zIndex: 20,
         fontFamily: "'Fraunces', serif",
         fontWeight: 500,

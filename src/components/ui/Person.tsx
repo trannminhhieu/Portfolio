@@ -45,7 +45,7 @@ const Person: React.FC<PersonProps> = ({
   background = "#fcf8db",
   scale = 1,
   rotate = 0,
-  height = "100vh",
+  height = "100svh",
   className = "",
   style,
 }) => {

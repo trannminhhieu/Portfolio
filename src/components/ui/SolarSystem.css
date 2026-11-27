@@ -9,7 +9,22 @@
   /* never shrink in a flex container; scaling is done with `scale` below */
   flex: none;
   overflow: hidden;
-  scale: var(--solar-scale, 1); /* around the center, so it stays centered */
+  /* around the center, so it stays centered. --solar-fit shrinks it on small screens */
+  scale: calc(var(--solar-scale, 1) * var(--solar-fit, 1));
+}
+
+/* ----- fit smaller screens (780px is wider/taller than phones and small tablets) ----- */
+@media (max-width: 900px), (max-height: 900px) {
+  .solar { --solar-fit: 0.8; }
+}
+@media (max-width: 640px), (max-height: 640px) {
+  .solar { --solar-fit: 0.6; }
+}
+@media (max-width: 480px), (max-height: 480px) {
+  .solar { --solar-fit: 0.45; }
+}
+@media (max-width: 360px) {
+  .solar { --solar-fit: 0.4; }
 }
 
 /* everything is centered on the middle of the box */

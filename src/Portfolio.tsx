@@ -12,7 +12,7 @@ export default function Portfolio() {
         background: THEME.ink,
         color: THEME.paper,
         fontFamily: "'Inter', sans-serif",
-        minHeight: "100vh",
+        minHeight: "100svh",
       }}
     >
       <NameTag name="tr.mihi" />

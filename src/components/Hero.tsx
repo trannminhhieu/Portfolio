@@ -9,7 +9,7 @@ export default function Hero({
   return (
     <section
       style={{
-        height: "100vh",
+        height: "100svh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
