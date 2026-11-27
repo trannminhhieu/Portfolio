@@ -3,6 +3,7 @@ import Hero from "./components/Hero";
 import AboutMe from "./components/AboutMe";
 import FavThings from "./components/FavThings";
 import Frisbee from "./components/Frisbee";
+import Quotes from "./components/Quotes";
 import { THEME } from "./theme";
 import "./styles/global.css";
 
@@ -21,6 +22,7 @@ export default function Portfolio() {
       <AboutMe />
       <FavThings />
       <Frisbee />
+      <Quotes />
     </div>
   );
 }
