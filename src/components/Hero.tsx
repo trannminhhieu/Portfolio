@@ -2,7 +2,7 @@ import HiCycle from "./ui/HiCycle";
 import Person from "./ui/Person";
 
 export default function Hero({
-  tagline = "Placeholder greeting — swap for your own line",
+  tagline = "Hi there, let me tell you a bit about myself.",
 }: {
   tagline?: string;
 }) {

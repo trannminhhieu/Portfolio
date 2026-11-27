@@ -118,16 +118,26 @@
   box-shadow: 0 0 34px #3a4385;
 }
 
-/* drawn in CSS instead of the original photo: blue ocean with green land */
+/* a bright blue dot with a strong glow and a slow pulse, so it stands out
+   from the faded planets */
 .solar__planet--earth {
-  width: 50px;
-  height: 50px;
-  margin: -25px 0 0 -25px;
-  background:
-    radial-gradient(circle at 30% 35%, #4caf50 0 18%, transparent 19%),
-    radial-gradient(circle at 68% 62%, #4caf50 0 22%, transparent 23%),
-    radial-gradient(circle at 35% 30%, #5dade2, #1f4e8c 75%);
-  box-shadow: 0 0 34px #3a4385;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  background-color: #1e88ff;
+  box-shadow:
+    0 0 0 0 rgba(30, 136, 255, 0.5),
+    0 0 28px 6px rgba(30, 136, 255, 0.55);
+  animation: earth-pulse 2.4s ease-out infinite;
+}
+
+/* a ring of blue spreads out from Earth and fades, like a "you are here" marker */
+@keyframes earth-pulse {
+  to {
+    box-shadow:
+      0 0 0 22px rgba(30, 136, 255, 0),
+      0 0 28px 6px rgba(30, 136, 255, 0.55);
+  }
 }
 
 .solar__planet--moon {
