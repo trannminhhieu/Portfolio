@@ -4,6 +4,11 @@ html {
   scroll-behavior: smooth;
 }
 
+/* no default 8px margin: sections reach the edges of the screen */
+body {
+  margin: 0;
+}
+
 @keyframes pulse {
   0%, 100% { opacity: 0.3; }
   50% { opacity: 1; }

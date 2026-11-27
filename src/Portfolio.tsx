@@ -2,6 +2,7 @@ import NameTag from "./components/NameTag";
 import Hero from "./components/Hero";
 import AboutMe from "./components/AboutMe";
 import FavThings from "./components/FavThings";
+import Frisbee from "./components/Frisbee";
 import { THEME } from "./theme";
 import "./styles/global.css";
 
@@ -19,6 +20,7 @@ export default function Portfolio() {
       <Hero />
       <AboutMe />
       <FavThings />
+      <Frisbee />
     </div>
   );
 }
