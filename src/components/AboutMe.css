@@ -45,14 +45,18 @@
 @media (max-width: 1024px) and (orientation: portrait), (max-height: 500px) {
   .about__person {
     /* at least 260px: on short phones (iPhone SE with Safari's bars ≈ 548px tall)
-       38% alone isn't enough to clear the text */
+       38% of the screen height alone isn't enough to clear the text.
+       dvh = the screen's current visible height (changes as Safari's bars
+       show and hide); the % line is the fallback for browsers without dvh. */
     translate: 0 max(38%, 260px);
+    translate: 0 max(38dvh, 260px);
   }
 }
 /* landscape phones are too short for that alone: tuck it further into the corner */
 @media (max-height: 500px) {
   .about__person {
     translate: 12% 45%;
+    translate: 12% 45dvh;
   }
 }
 

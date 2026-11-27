@@ -74,14 +74,32 @@
 
 .frisbee__heading {
   grid-area: 1 / 1;
-  max-width: 13ch; /* wraps as "I really love / frisbee" */
+  /* always two lines: "I really love" / "frisbee" */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin: 0;
-  font-family: "IBM Plex Mono", monospace;
-  font-weight: 500;
-  /* a monospace line is wide: "I really love" is about 7.8× the font size */
-  font-size: clamp(36px, min(9.5vw, 20vh), 160px);
+  font-family: "Fraunces", serif;
+  font-weight: 600;
+  font-size: clamp(40px, min(10vw, 20vh), 168px);
   line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
+  text-align: center;
+  color: #000000;
+}
+
+/* "Let me tell you about my journey": same spot as the heading, smaller */
+.frisbee__subline {
+  grid-area: 1 / 1;
+  max-width: 12em;
+  /* lines of equal length: "Let me tell you / about my journey" */
+  text-wrap: balance;
+  margin: 0;
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  font-size: clamp(28px, min(5vw, 10vh), 80px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
   text-align: center;
   color: #000000;
 }
@@ -271,7 +289,11 @@
 
 /* the heading above the chapters, in the flow */
 .frisbee--static .frisbee__heading {
-  margin-bottom: 1em;
+  margin-bottom: 0.5em;
+}
+
+.frisbee--static .frisbee__subline {
+  margin-bottom: 1.5em;
 }
 
 .frisbee--static .frisbee__chapters {

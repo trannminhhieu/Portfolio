@@ -28,70 +28,72 @@ const CHAPTERS: Chapter[] = [
   {
     year: "2020",
     title: "The first throw",
-    text: "Placeholder: who first handed you a disc, where you were, and how badly (or well) that first throw went.",
+    text: "My first ever Ultimate game, didn't do much, but was very fun.",
     image: `${import.meta.env.BASE_URL}frisbee/first-time-throwing.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
-    year: "20??",
+    year: "2022",
     title: "Learning to flick",
-    text: "Placeholder: the pickup games, the backhands that wobbled, the moment the forehand finally clicked.",
+    text: "The pickup games, the backhands that wobbled, the moment the forehand finally clicked,\
+            weird pose though.",
     image: `${import.meta.env.BASE_URL}frisbee/learning-to-flick.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
-    year: "20??",
-    title: "Banana pickup",
-    text: "Placeholder: the story behind banana pickup.",
-    image: `${import.meta.env.BASE_URL}frisbee/banana-pickup.jpg`,
+    year: "2023",
+    title: "First International tournament",
+    text: "The first tournament: Going to big Leagues. The nerves, a score, for team Vietnam.",
+    image: `${import.meta.env.BASE_URL}frisbee/first-international-tournament.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
-    year: "20??",
-    title: "Pretty cool",
-    text: "Placeholder: what made this moment pretty cool.",
-    image: `${import.meta.env.BASE_URL}frisbee/pretty-cool.jpg`,
+    year: "2023",
+    title: "The MeKong Cup",
+    text: "The dream team I joined, the people on it, and what Spirit of the Game started to mean to me.",
+    image: `${import.meta.env.BASE_URL}frisbee/the-mekong-cup.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
     year: "2023",
     title: "Rsuit",
-    text: "Placeholder: Rsuit in 2023: the team, the people, and what it meant to you.",
+    text: "Captain of the Offense Line. Hot headed, no time to chill.",
     image: `${import.meta.env.BASE_URL}frisbee/Rsuit-2023.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
-    year: "20??",
-    title: "The Mekong Cup",
-    text: "Placeholder: the Mekong Cup: the nerves, a layout you still remember, the score you'd rather forget.",
-    image: `${import.meta.env.BASE_URL}frisbee/the-mekong-cup.jpg`,
-    imageAlt: "Short description of the photo",
-  },
-  {
-    year: "20??",
-    title: "First international tournament",
-    text: "Placeholder: your first tournament abroad and what it felt like.",
-    image: `${import.meta.env.BASE_URL}frisbee/first-international-tournament.jpg`,
-    imageAlt: "Short description of the photo",
-  },
-  {
-    year: "20??",
-    title: "Third time's the charm",
-    text: "Placeholder: what finally worked out on the third try.",
-    image: `${import.meta.env.BASE_URL}frisbee/third-time-the-charm.jpg`,
+    year: "2024",
+    title: "Friendly match",
+    text: "Play with some amzing peoples. Learn to control myself.",
+    image: `${import.meta.env.BASE_URL}frisbee/pretty-cool.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
     year: "2025",
     title: "Rsuit, two years on",
-    text: "Placeholder: Rsuit in 2025: what changed since 2023.",
+    text: "Clutching, although we lose that game, but we showed what we can do.",
     image: `${import.meta.env.BASE_URL}frisbee/Rsuit-2025.jpg`,
+    imageAlt: "Short description of the photo",
+  },
+  {
+    year: "2025",
+    title: "Banana Pick up",
+    text: "Winner Winner Banana Dinner.",
+    image: `${import.meta.env.BASE_URL}frisbee/banana-pickup.jpg`,
+    imageAlt: "Short description of the photo",
+  },
+  {
+    year: "2026",
+    title: "Third place in RSUIT",
+    text: "Yeah...ah..., first half was good, but second half was sh*t. \
+            Third time the charms, manage to win.",
+    image: `${import.meta.env.BASE_URL}frisbee/third-time-the-charm.jpg`,
     imageAlt: "Short description of the photo",
   },
   {
     year: "Now",
     title: "Still throwing",
-    text: "Placeholder: where frisbee is in your life today, and what's next.",
+    text: "Where frisbee is in your life today, and what's next.",
     image: `${import.meta.env.BASE_URL}frisbee/still-throwing.jpg`,
     imageAlt: "Short description of the photo",
   },
@@ -107,8 +109,9 @@ const CHAPTERS: Chapter[] = [
  * Each one fades in, holds, then fades out (upwards) before the next fades in;
  * the last one stays. SCROLL_PER_SLOT of scrolling per chapter.
  *
- * Before the first chapter there's one more screen: a big heading (see Intro).
- * The line and the "Frisbee" label fade in as it leaves.
+ * Before the first chapter there are two more screens (see Intro): a big
+ * heading whose last word becomes the "Frisbee" label, then a smaller line
+ * introducing the story. The line down the middle fades in as the intro leaves.
  *
  * Visitors who prefer reduced motion get the chapters stacked, nothing moves.
  */
@@ -122,16 +125,17 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
     offset: ["start start", "end end"],
   });
   const n = chapters.length;
-  // scroll slices: the intro, then one per chapter
-  const slots = n + 1;
-  const introEnd = 1 / slots;
+  // scroll slices: the intro's, then one per chapter
+  const slots = INTRO_SLOTS + n;
+  const slot = 1 / slots; // one slice, as a part of the whole scroll (0–1)
+  const introEnd = INTRO_SLOTS * slot;
   // line: hidden during the intro, fades in as it leaves
-  const lineOpacity = useTransform(scrollYProgress, [introEnd * 0.8, introEnd], [0, 1]);
+  const lineOpacity = useTransform(scrollYProgress, [introEnd - 0.2 * slot, introEnd], [0, 1]);
   // label: takes over from the heading's "frisbee" once that word has flown
   // into its spot (see Intro)
   const kickerOpacity = useTransform(
     scrollYProgress,
-    [introEnd * HANDOVER[0], introEnd * HANDOVER[1]],
+    [slot * HANDOVER[0], slot * HANDOVER[1]],
     [0, 1],
   );
   const pinRef = useRef<HTMLDivElement>(null);
@@ -148,7 +152,7 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
       <div className="frisbee__pin" ref={pinRef}>
         <Intro
           progress={scrollYProgress}
-          end={introEnd}
+          slot={slot}
           still={!!reduceMotion}
           pinRef={pinRef}
           kickerRef={kickerRef}
@@ -171,7 +175,7 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
               key={i}
               chapter={chapter}
               index={i}
-              slot={i + 1}
+              slot={INTRO_SLOTS + i}
               slots={slots}
               progress={scrollYProgress}
               still={!!reduceMotion}
@@ -189,32 +193,41 @@ const SCROLL_PER_SLOT = 125;
 /** The heading; its last word flies up and becomes the "Frisbee" label. */
 const HEADING_LEAD = "I REALLY LOVE";
 const HEADING_WORD = "FRISBEE";
+/** Smaller line that takes the heading's place once the word has flown up */
+const SUBLINE = "Let me tell you about my journey";
+
+/** Scroll slices the intro takes: the heading, then the subline */
+const INTRO_SLOTS = 2;
 
 /** Part of the intro's scroll (0–1) where the flying word crossfades into the label */
 const HANDOVER = [0.88, 0.96] as const;
 
 /**
- * The opening line, big. Fades in from below and holds, like AboutMe's facts.
- * Then "I really love" fades out upwards while "frisbee" shrinks and flies up
- * into the "Frisbee" label's spot, and crossfades into the label.
- * Owns the scroll from 0 to `end`.
+ * The opening, over the first two slices of the scroll:
+ * 1. The big heading fades in from below and holds, like AboutMe's facts.
+ * 2. "I really love" fades out upwards while "frisbee" shrinks and flies up
+ *    into the "Frisbee" label's spot, and crossfades into the label.
+ * 3. Meanwhile the smaller subline fades in from below where the heading
+ *    was, holds, then fades out upwards before the first chapter.
  */
 function Intro({
   progress,
-  end,
+  slot,
   still,
   pinRef,
   kickerRef,
 }: {
   progress: MotionValue<number>;
-  end: number;
+  /** length of one scroll slice (0–1); the intro owns the first two */
+  slot: number;
   still: boolean;
   /** the pinned screen: positions are measured inside it */
   pinRef: RefObject<HTMLElement | null>;
   /** the label the word flies into */
   kickerRef: RefObject<HTMLElement | null>;
 }) {
-  const at = (f: number) => f * end; // point f (0–1) of the intro's slice
+  // point f of the intro, in slices: 0–1 is the first slice, 1–2 the second
+  const at = (f: number) => f * slot;
 
   // the whole heading: in from below
   const opacity = useTransform(progress, [0, at(0.3)], [0, 1]);
@@ -235,6 +248,14 @@ function Intro({
   const wordOpacity = useTransform(progress, [at(HANDOVER[0]), at(HANDOVER[1])], [1, 0]);
   // hidden once the word has handed over, so it can't catch clicks or text selection
   const visibility = useTransform(wordOpacity, (o) => (o < 0.01 ? "hidden" : "visible"));
+
+  // subline: in from below as the word flies up, out upwards at the end of the intro
+  const sublineRange = [at(0.75), at(1.05), at(1.6), at(1.9)];
+  const sublineOpacity = useTransform(progress, sublineRange, [0, 1, 1, 0]);
+  const sublineY = useTransform(progress, sublineRange, [24, 0, 0, -24]);
+  const sublineVisibility = useTransform(sublineOpacity, (o) =>
+    o < 0.01 ? "hidden" : "visible",
+  );
 
   const wordRef = useRef<HTMLSpanElement>(null);
   useLayoutEffect(() => {
@@ -262,7 +283,12 @@ function Intro({
   }, [still, pinRef, kickerRef, dx, dy, ds]);
 
   if (still) {
-    return <h2 className="frisbee__heading">{`${HEADING_LEAD} ${HEADING_WORD}`}</h2>;
+    return (
+      <>
+        <h2 className="frisbee__heading">{`${HEADING_LEAD} ${HEADING_WORD}`}</h2>
+        <p className="frisbee__subline">{SUBLINE}</p>
+      </>
+    );
   }
 
   return (
@@ -279,6 +305,12 @@ function Intro({
           {HEADING_WORD}
         </motion.span>
       </motion.h2>
+      <motion.p
+        className="frisbee__subline"
+        style={{ opacity: sublineOpacity, y: sublineY, visibility: sublineVisibility }}
+      >
+        {SUBLINE}
+      </motion.p>
     </div>
   );
 }
