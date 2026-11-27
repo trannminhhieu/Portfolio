@@ -1,0 +1,155 @@
+/* Animated solar system (adapted from a CodePen snippet).
+   Every orbit and "spin" box is a square centered on the sun; a spin box rotates
+   forever, carrying its planet, which sits at the top-center of the box. */
+
+.solar {
+  position: relative;
+  width: 780px;
+  height: 780px;
+  /* never shrink in a flex container; scaling is done with `scale` below */
+  flex: none;
+  overflow: hidden;
+  scale: var(--solar-scale, 1); /* around the center, so it stays centered */
+}
+
+/* everything is centered on the middle of the box */
+.solar__sun,
+.solar__orbit,
+.solar__spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.solar__orbit {
+  border: 1px dashed #999;
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+/* planets sit on the top edge of their spin box */
+.solar__planet {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  border-radius: 50%;
+}
+
+.solar__sun {
+  width: 200px;
+  height: 200px;
+  margin: -100px 0 0 -100px;
+  border-radius: 50%;
+  background-color: #fae20a;
+  box-shadow: 0 0 84px orange;
+}
+
+/* ----- orbit sizes (orbit ring and spin box share them) ----- */
+
+.solar__orbit--mercury,
+.solar__spin--mercury {
+  width: 280px;
+  height: 280px;
+  margin: -140px 0 0 -140px;
+}
+
+.solar__orbit--venus,
+.solar__spin--venus {
+  width: 370px;
+  height: 370px;
+  margin: -185px 0 0 -185px;
+}
+
+.solar__orbit--earth,
+.solar__spin--earth {
+  width: 500px;
+  height: 500px;
+  margin: -250px 0 0 -250px;
+}
+
+/* the moon's orbit is centered on Earth, i.e. on the top edge of Earth's spin box */
+.solar__orbit--moon,
+.solar__spin--moon {
+  top: 0;
+  width: 90px;
+  height: 90px;
+  margin: -45px 0 0 -45px;
+}
+.solar__orbit--moon {
+  border-color: #aab;
+}
+
+.solar__orbit--mars,
+.solar__spin--mars {
+  width: 700px;
+  height: 700px;
+  margin: -350px 0 0 -350px;
+}
+
+/* ----- planets ----- */
+
+.solar__planet--mercury {
+  width: 25px;
+  height: 25px;
+  margin: -12.5px 0 0 -12.5px;
+  background-color: #a65e22;
+}
+
+.solar__planet--venus {
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  background-color: #3498db;
+  box-shadow: 0 0 34px #3a4385;
+}
+
+/* drawn in CSS instead of the original photo: blue ocean with green land */
+.solar__planet--earth {
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
+  background:
+    radial-gradient(circle at 30% 35%, #4caf50 0 18%, transparent 19%),
+    radial-gradient(circle at 68% 62%, #4caf50 0 22%, transparent 23%),
+    radial-gradient(circle at 35% 30%, #5dade2, #1f4e8c 75%);
+  box-shadow: 0 0 34px #3a4385;
+}
+
+.solar__planet--moon {
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  background: #d9d9d9;
+  box-shadow: 0 0 14px #3a4385;
+}
+
+.solar__planet--mars {
+  width: 32px;
+  height: 32px;
+  margin: -16px 0 0 -16px;
+  background-color: #863222;
+  box-shadow: 0 0 14px #a64232;
+}
+
+/* ----- spinning ----- */
+
+@keyframes solar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.solar__spin--mercury { animation: solar-spin 8.8s linear infinite; }
+.solar__spin--venus { animation: solar-spin 22s linear infinite; }
+.solar__spin--earth { animation: solar-spin 36.5s linear infinite; }
+.solar__spin--moon { animation: solar-spin 3s linear infinite; }
+.solar__spin--mars { animation: solar-spin 68.7s linear infinite; }
+
+/* ----- focus on Earth: the sun and the other planets are faded ----- */
+
+.solar__sun,
+.solar__planet--mercury,
+.solar__planet--venus,
+.solar__planet--mars {
+  opacity: 0.3;
+}

@@ -39,7 +39,7 @@ export default function Hero({
             color: "#000000",
           }}
         >
-          <HiCycle />, I'm Hieu.
+          <HiCycle /> Hieu.
         </h1>
         <p
           style={{

@@ -6,18 +6,20 @@ import { motion, AnimatePresence, type Variants } from "motion/react";
  * Loops continuously (unlike a one-shot preloader) since it lives in the
  * hero permanently, not just on first load.
  */
+// Each entry is followed by " Hieu." in the hero, so each one means "Hello, I'm".
 const words = [
-  "Hi",
-  "नमस्ते",
-  "Hello",
-  "Bonjour",
-  "Ciao",
-  "Olà",
-  "やあ",
-  "Hallå",
-  "Guten tag",
-  "Hallo",
-  "Xin Chào",
+  "Hi, I'm", // English
+  "नमस्ते, मैं", // Hindi 
+  "Hello, I'm", // English
+  "Bonjour, je suis", // French
+  "Ciao, sono", // Italian
+  "Olá, eu sou", // Portuguese
+  "やあ、私は", // Japanese 
+  "안녕하세요, 저는", // Korean 
+  "Hallå, jag är", // Swedish
+  "Guten Tag, ich bin", // German
+  "Hallo, ik ben", // Dutch
+  "Xin chào, tớ là", // Vietnamese
 ];
 
 const fade: Variants = {
