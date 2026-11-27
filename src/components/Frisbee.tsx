@@ -1,6 +1,7 @@
-import { useRef } from "react";
+import { useLayoutEffect, useRef, type RefObject } from "react";
 import {
   motion,
+  useMotionValue,
   useReducedMotion,
   useScroll,
   useTransform,
@@ -61,6 +62,9 @@ const CHAPTERS: Chapter[] = [
  * Each one fades in, holds, then fades out (upwards) before the next fades in;
  * the last one stays. One screen of scrolling per chapter.
  *
+ * Before the first chapter there's one more screen: a big heading (see Intro).
+ * The line and the "Frisbee" label fade in as it leaves.
+ *
  * Visitors who prefer reduced motion get the chapters stacked, nothing moves.
  */
 export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] }) {
@@ -73,25 +77,57 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
     offset: ["start start", "end end"],
   });
   const n = chapters.length;
+  // scroll slices: the intro, then one per chapter
+  const slots = n + 1;
+  const introEnd = 1 / slots;
+  // line: hidden during the intro, fades in as it leaves
+  const lineOpacity = useTransform(scrollYProgress, [introEnd * 0.8, introEnd], [0, 1]);
+  // label: takes over from the heading's "frisbee" once that word has flown
+  // into its spot (see Intro)
+  const kickerOpacity = useTransform(
+    scrollYProgress,
+    [introEnd * HANDOVER[0], introEnd * HANDOVER[1]],
+    [0, 1],
+  );
+  const pinRef = useRef<HTMLDivElement>(null);
+  const kickerRef = useRef<HTMLParagraphElement>(null);
 
   return (
     <section
       id="frisbee"
       ref={ref}
       className={reduceMotion ? "frisbee frisbee--static" : "frisbee"}
-      // extra height = scroll distance: one screen per chapter
-      style={reduceMotion ? undefined : { height: `${n * 100}svh` }}
+      // extra height = scroll distance: one screen for the intro and each chapter
+      style={reduceMotion ? undefined : { height: `${slots * 100}svh` }}
     >
-      <div className="frisbee__pin">
-        <div className="frisbee__line" aria-hidden="true" />
-        <p className="frisbee__kicker">Frisbee</p>
+      <div className="frisbee__pin" ref={pinRef}>
+        <Intro
+          progress={scrollYProgress}
+          end={introEnd}
+          still={!!reduceMotion}
+          pinRef={pinRef}
+          kickerRef={kickerRef}
+        />
+        <motion.div
+          className="frisbee__line"
+          style={reduceMotion ? undefined : { opacity: lineOpacity }}
+          aria-hidden="true"
+        />
+        <motion.p
+          className="frisbee__kicker"
+          ref={kickerRef}
+          style={reduceMotion ? undefined : { opacity: kickerOpacity }}
+        >
+          Frisbee
+        </motion.p>
         <ol className="frisbee__chapters">
           {chapters.map((chapter, i) => (
             <ChapterCard
               key={i}
               chapter={chapter}
               index={i}
-              count={n}
+              slot={i + 1}
+              slots={slots}
               progress={scrollYProgress}
               still={!!reduceMotion}
             />
@@ -102,6 +138,116 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
   );
 }
 
+/** The heading; its last word flies up and becomes the "Frisbee" label. */
+const HEADING_LEAD = "I REALLY LOVE";
+const HEADING_WORD = "FRISBEE";
+
+/** Part of the intro's scroll (0–1) where the flying word crossfades into the label */
+const HANDOVER = [0.88, 0.96] as const;
+
+/**
+ * The opening line, big. Fades in from below and holds, like AboutMe's facts.
+ * Then "I really love" fades out upwards while "frisbee" shrinks and flies up
+ * into the "Frisbee" label's spot, and crossfades into the label.
+ * Owns the scroll from 0 to `end`.
+ */
+function Intro({
+  progress,
+  end,
+  still,
+  pinRef,
+  kickerRef,
+}: {
+  progress: MotionValue<number>;
+  end: number;
+  still: boolean;
+  /** the pinned screen: positions are measured inside it */
+  pinRef: RefObject<HTMLElement | null>;
+  /** the label the word flies into */
+  kickerRef: RefObject<HTMLElement | null>;
+}) {
+  const at = (f: number) => f * end; // point f (0–1) of the intro's slice
+
+  // the whole heading: in from below
+  const opacity = useTransform(progress, [0, at(0.3)], [0, 1]);
+  const y = useTransform(progress, [0, at(0.3)], [24, 0]);
+
+  // "I really love": out upwards
+  const leadOpacity = useTransform(progress, [at(0.45), at(0.65)], [1, 0]);
+  const leadY = useTransform(progress, [at(0.45), at(0.65)], [0, -24]);
+
+  // "frisbee": from its place in the heading to the label's (measured below)
+  const dx = useMotionValue(0);
+  const dy = useMotionValue(0);
+  const ds = useMotionValue(1);
+  const t = useTransform(progress, [at(0.5), at(0.9)], [0, 1]); // 0 = in place, 1 = at the label
+  const wordX = useTransform<number, number>([t, dx], ([t, dx]) => t * dx);
+  const wordY = useTransform<number, number>([t, dy], ([t, dy]) => t * dy);
+  const wordScale = useTransform<number, number>([t, ds], ([t, ds]) => 1 + t * (ds - 1));
+  const wordOpacity = useTransform(progress, [at(HANDOVER[0]), at(HANDOVER[1])], [1, 0]);
+  // hidden once the word has handed over, so it can't catch clicks or text selection
+  const visibility = useTransform(wordOpacity, (o) => (o < 0.01 ? "hidden" : "visible"));
+
+  const wordRef = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    const word = wordRef.current;
+    const kicker = kickerRef.current;
+    const pin = pinRef.current;
+    if (!word || !kicker || !pin) return;
+    // where the word must go and how much it must shrink so that it lands
+    // exactly on the label's text; re-measured when anything changes size
+    // (screen size, fonts loading)
+    const measure = () => {
+      const w = offsetIn(word, pin);
+      const k = offsetIn(kicker, pin);
+      const cs = getComputedStyle(kicker);
+      const padLeft = parseFloat(cs.paddingLeft);
+      const textWidth = kicker.offsetWidth - padLeft - parseFloat(cs.paddingRight);
+      dx.set(k.left + padLeft + textWidth / 2 - (w.left + word.offsetWidth / 2));
+      dy.set(k.top + kicker.offsetHeight / 2 - (w.top + word.offsetHeight / 2));
+      ds.set(textWidth / word.offsetWidth);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    [pin, word, kicker].forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [still, pinRef, kickerRef, dx, dy, ds]);
+
+  if (still) {
+    return <h2 className="frisbee__heading">{`${HEADING_LEAD} ${HEADING_WORD}`}</h2>;
+  }
+
+  return (
+    <div className="frisbee__intro">
+      <motion.h2 className="frisbee__heading" style={{ opacity, y, visibility }}>
+        <motion.span className="frisbee__heading-part" style={{ opacity: leadOpacity, y: leadY }}>
+          {HEADING_LEAD}
+        </motion.span>{" "}
+        <motion.span
+          ref={wordRef}
+          className="frisbee__heading-part"
+          style={{ x: wordX, y: wordY, scale: wordScale, opacity: wordOpacity }}
+        >
+          {HEADING_WORD}
+        </motion.span>
+      </motion.h2>
+    </div>
+  );
+}
+
+/** Position of `el` inside `ancestor`, before any transforms (moves, scaling). */
+function offsetIn(el: HTMLElement, ancestor: HTMLElement) {
+  let left = 0;
+  let top = 0;
+  let node: HTMLElement | null = el;
+  while (node && node !== ancestor) {
+    left += node.offsetLeft;
+    top += node.offsetTop;
+    node = node.offsetParent as HTMLElement | null;
+  }
+  return { left, top };
+}
+
 /**
  * One chapter. It owns one slice of the scroll: fades in over the first 30%,
  * holds, fades out over the last 30% (same timing as AboutMe's facts).
@@ -110,20 +256,23 @@ export default function Frisbee({ chapters = CHAPTERS }: { chapters?: Chapter[] 
 function ChapterCard({
   chapter,
   index,
-  count,
+  slot,
+  slots,
   progress,
   still,
 }: {
   chapter: Chapter;
   index: number;
-  count: number;
+  /** which scroll slice it owns (the intro has slice 0) */
+  slot: number;
+  slots: number;
   progress: MotionValue<number>;
   still: boolean;
 }) {
-  const len = 1 / count;
-  const start = index * len;
+  const len = 1 / slots;
+  const start = slot * len;
   const at = (f: number) => start + f * len; // point f (0–1) of this slice
-  const last = index === count - 1;
+  const last = slot === slots - 1;
 
   const opacity = useTransform(
     progress,
@@ -158,7 +307,7 @@ function ChapterCard({
       )}
       <div className="frisbee__body">
         <p className="frisbee__label">
-          {String(index + 1).padStart(2, "0")} — <time>{chapter.year}</time>
+          <time>{chapter.year}</time>
         </p>
         <h3 className="frisbee__title">{chapter.title}</h3>
         <p className="frisbee__text">{chapter.text}</p>

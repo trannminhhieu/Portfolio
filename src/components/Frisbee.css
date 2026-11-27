@@ -44,9 +44,12 @@
 .frisbee__kicker {
   position: absolute;
   top: clamp(24px, 6vh, 56px);
-  left: 50%;
-  transform: translateX(-50%);
-  margin: 0;
+  /* centered without a transform, so its position can be measured
+     (the heading's last word flies into it, see Intro in Frisbee.tsx) */
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin: 0 auto;
   padding: 6px 12px;
   background: #ffffff;
   font-family: "IBM Plex Mono", monospace;
@@ -54,6 +57,38 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Intro: the big heading ---------- */
+
+/* full screen, heading in the middle */
+.frisbee__intro {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 0 clamp(16px, 5vw, 64px);
+  pointer-events: none;
+}
+
+.frisbee__heading {
+  grid-area: 1 / 1;
+  max-width: 13ch; /* wraps as "I really love / frisbee" */
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  /* a monospace line is wide: "I really love" is about 7.8× the font size */
+  font-size: clamp(36px, min(9.5vw, 20vh), 160px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: center;
+  color: #000000;
+}
+
+/* "I really love" and "frisbee" move separately (inline elements can't) */
+.frisbee__heading-part {
+  display: inline-block;
 }
 
 /* all chapters in the same spot, so they can take turns */
@@ -184,7 +219,8 @@
   .frisbee__kicker {
     top: 72px;
     left: calc(var(--line-x) + 24px);
-    transform: none;
+    right: auto;
+    margin: 0;
     padding-left: 0;
   }
 
@@ -233,6 +269,11 @@
   padding-bottom: clamp(64px, 12vh, 120px);
 }
 
+/* the heading above the chapters, in the flow */
+.frisbee--static .frisbee__heading {
+  margin-bottom: 1em;
+}
+
 .frisbee--static .frisbee__chapters {
   display: flex;
   flex-direction: column;
@@ -243,6 +284,6 @@
   position: relative;
   top: auto;
   left: auto;
-  transform: none;
+  right: auto;
   margin-bottom: 48px;
 }
