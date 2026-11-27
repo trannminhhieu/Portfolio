@@ -200,8 +200,9 @@
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .about {
-      /* extra height = scroll distance for the animation */
-      height: 300vh;
+      /* extra height = scroll distance for the animation:
+         the pinned screen itself, plus 3 facts × 1 screen each */
+      height: 400vh;
       view-timeline-name: --about;
     }
 

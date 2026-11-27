@@ -1,0 +1,289 @@
+/* Frisbee story: pinned like AboutMe, chapters take turns in the middle.
+   A line runs down the center; photo on one side, text on the other.
+   The fades are driven by scroll from Frisbee.tsx (motion). */
+
+/* ---------- Layout ---------- */
+
+.frisbee {
+  --line: #808080; /* same grey as the labels (black at 50% on white) */
+  --gap: clamp(32px, 5vw, 64px); /* space between the line's two sides */
+  position: relative;
+  /* height is set inline: one screen per chapter */
+  background: #ffffff;
+  color: #000000;
+}
+
+.frisbee__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 clamp(24px, 6vw, 96px);
+  box-sizing: border-box;
+  overflow: hidden; /* fallback for old browsers */
+  overflow: clip;
+}
+
+/* the line: full height, exactly in the middle */
+.frisbee__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--line);
+}
+
+/* sits on the line: a white background cuts the line behind it */
+/* near the top of the screen, on the line */
+.frisbee__kicker {
+  position: absolute;
+  top: clamp(24px, 6vh, 56px);
+  /* centered without a transform, so its position can be measured
+     (the heading's last word flies into it, see Intro in Frisbee.tsx) */
+  left: 0;
+  right: 0;
+  width: max-content;
+  margin: 0 auto;
+  padding: 6px 12px;
+  background: #ffffff;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Intro: the big heading ---------- */
+
+/* full screen, heading in the middle */
+.frisbee__intro {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: 0 clamp(16px, 5vw, 64px);
+  pointer-events: none;
+}
+
+.frisbee__heading {
+  grid-area: 1 / 1;
+  max-width: 13ch; /* wraps as "I really love / frisbee" */
+  margin: 0;
+  font-family: "IBM Plex Mono", monospace;
+  font-weight: 500;
+  /* a monospace line is wide: "I really love" is about 7.8× the font size */
+  font-size: clamp(36px, min(9.5vw, 20vh), 160px);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  text-align: center;
+  color: #000000;
+}
+
+/* "I really love" and "frisbee" move separately (inline elements can't) */
+.frisbee__heading-part {
+  display: inline-block;
+}
+
+/* all chapters in the same spot, so they can take turns */
+.frisbee__chapters {
+  display: grid;
+  width: min(100%, 64em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ---------- Chapter: text left, photo right (--flip: the other way round) ---------- */
+
+.frisbee__chapter {
+  position: relative;
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--gap);
+  align-items: center;
+}
+
+/* marker on the line, level with the chapter's middle */
+.frisbee__chapter::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--line);
+  transform: translate(-50%, -50%);
+}
+
+.frisbee__body {
+  grid-area: 1 / 1;
+  justify-self: end;
+  text-align: right;
+}
+
+.frisbee__img {
+  grid-area: 1 / 2;
+  justify-self: start;
+}
+
+.frisbee__chapter--flip .frisbee__body {
+  grid-area: 1 / 2;
+  justify-self: start;
+  text-align: left;
+}
+
+.frisbee__chapter--flip .frisbee__img {
+  grid-area: 1 / 1;
+  justify-self: end;
+}
+
+/* ---------- Chapter contents ---------- */
+
+.frisbee__img {
+  box-sizing: border-box;
+  /* at most ~45% of the screen's height (width / 1.3) */
+  width: min(100%, 24em, 58vh);
+  aspect-ratio: 1.3;
+  border: solid 2px;
+  border-radius: 0.625em;
+  object-fit: cover;
+}
+
+/* no photo yet: an empty frame */
+.frisbee__img--empty {
+  display: grid;
+  place-items: center;
+  border-style: dashed;
+  color: rgba(0, 0, 0, 0.35);
+  font: 12px "IBM Plex Mono", monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.frisbee__body {
+  max-width: 28em;
+}
+
+.frisbee__label {
+  margin: 0 0 12px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: clamp(14px, 1.6vw, 20px);
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.frisbee__title {
+  margin: 0 0 clamp(12px, 2vh, 20px);
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  /* min(…vh) keeps it from overflowing short landscape screens */
+  font-size: clamp(28px, min(5vw, 9vh), 72px);
+  line-height: 1.05;
+}
+
+.frisbee__text {
+  margin: 0;
+  font: clamp(15px, 1.4vw, 18px) / 1.55 "Inter", sans-serif;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+/* ---------- Phones: line on the left, text under the photo ---------- */
+
+@media (max-width: 700px) {
+  .frisbee {
+    --line-x: 24px; /* line's distance from the left edge */
+  }
+
+  .frisbee__pin {
+    align-items: stretch;
+    padding: 0 20px 0 calc(var(--line-x) + 24px);
+  }
+
+  /* starts below the name tag in the top-left corner, fading in */
+  .frisbee__line {
+    top: 72px;
+    left: var(--line-x);
+    -webkit-mask-image: linear-gradient(transparent, #000 48px);
+    mask-image: linear-gradient(transparent, #000 48px);
+  }
+
+  /* left-aligned with the chapters, just below the name tag */
+  .frisbee__kicker {
+    top: 72px;
+    left: calc(var(--line-x) + 24px);
+    right: auto;
+    margin: 0;
+    padding-left: 0;
+  }
+
+  .frisbee__chapter,
+  .frisbee__chapter--flip {
+    grid-template-columns: 1fr;
+    row-gap: 20px;
+  }
+
+  /* marker on the line, level with the top of the photo */
+  .frisbee__chapter::before {
+    top: 0;
+    left: -24px;
+    transform: translate(-50%, 0);
+  }
+
+  .frisbee__img,
+  .frisbee__chapter--flip .frisbee__img {
+    grid-area: 1 / 1;
+    justify-self: start;
+    width: min(100%, 39vh); /* at most 30% of the screen's height */
+  }
+
+  .frisbee__body,
+  .frisbee__chapter--flip .frisbee__body {
+    grid-area: 2 / 1;
+    justify-self: start;
+    text-align: left;
+  }
+
+  .frisbee__label {
+    font-size: 14px;
+  }
+
+  .frisbee__title {
+    font-size: clamp(28px, 8vw, 40px);
+  }
+}
+
+/* ---------- Reduced motion: chapters stacked, nothing pinned ---------- */
+
+.frisbee--static .frisbee__pin {
+  position: static;
+  height: auto;
+  padding-top: clamp(64px, 12vh, 120px);
+  padding-bottom: clamp(64px, 12vh, 120px);
+}
+
+/* the heading above the chapters, in the flow */
+.frisbee--static .frisbee__heading {
+  margin-bottom: 1em;
+}
+
+.frisbee--static .frisbee__chapters {
+  display: flex;
+  flex-direction: column;
+  gap: 5em;
+}
+
+.frisbee--static .frisbee__kicker {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  margin-bottom: 48px;
+}

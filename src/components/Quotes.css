@@ -1,0 +1,49 @@
+/* Quote section: handwritten quote with a highlighter sweeping over it */
+
+.quote {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: clamp(64px, 15vh, 160px) clamp(24px, 15vw, 30vw);
+  /* extra space at the bottom lifts the centered quote above the middle (as in AboutMe) */
+  padding-bottom: calc(clamp(64px, 15vh, 160px) + 16vh);
+  box-sizing: border-box;
+  background: #ffffff;
+  color: hsl(198, 1%, 29%);
+}
+
+.quote__figure {
+  margin: 0;
+}
+
+.quote__block {
+  margin: 0;
+}
+
+/* inline, so the highlighter follows the text line by line */
+.quote__text {
+  display: inline;
+  margin: 0;
+  font-family: "Gochi Hand", cursive;
+  font-size: clamp(24px, 3.2vw, 40px);
+  line-height: 1.5;
+  /* the highlighter stroke: light blue across the lower part of the line */
+  background-image: linear-gradient(
+    transparent 50%,
+    #e1fffe 50%,
+    #b0f8ff 85%,
+    transparent 85%,
+    transparent 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 0% 100%; /* how much is drawn: set from Quotes.tsx while scrolling */
+}
+
+.quote__author {
+  margin-top: 1.5em;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  color: rgba(0, 0, 0, 0.5);
+}
