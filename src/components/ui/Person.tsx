@@ -1,0 +1,82 @@
+import React, { CSSProperties } from "react";
+import "./Person.css";
+
+export interface PersonColors {
+  black?: string;
+  white?: string;
+  blue?: string;
+  skin?: string;
+  darkSkin?: string;
+  lightSkin?: string;
+  yellow?: string;
+  darkYellow?: string;
+}
+
+export interface PersonProps {
+  /** Override any of the illustration colors */
+  colors?: PersonColors;
+  /** Background color of the stage */
+  background?: string;
+  /** Size multiplier for the illustration (1 = original size, 2 = twice as big) */
+  scale?: number;
+  /** Height of the stage (defaults to full viewport height) */
+  height?: CSSProperties["height"];
+  className?: string;
+  style?: CSSProperties;
+}
+
+const defaultColors: Required<PersonColors> = {
+  black: "#00202a",
+  white: "#f8f8f8",
+  blue: "#2348cd",
+  skin: "#f77676",
+  darkSkin: "#cc3c40",
+  lightSkin: "#f3af9f",
+  yellow: "#f6d359",
+  darkYellow: "#e9a964",
+};
+
+type CSSVars = CSSProperties & Record<`--${string}`, string | number | undefined>;
+
+const Person: React.FC<PersonProps> = ({
+  colors,
+  background = "#fcf8db",
+  scale = 1,
+  height = "100vh",
+  className = "",
+  style,
+}) => {
+  const c = { ...defaultColors, ...colors };
+
+  const stageStyle: CSSVars = {
+    "--black": c.black,
+    "--white": c.white,
+    "--blue": c.blue,
+    "--skin": c.skin,
+    "--dark-skin": c.darkSkin,
+    "--light-skin": c.lightSkin,
+    "--yellow": c.yellow,
+    "--dark-yellow": c.darkYellow,
+    "--person-scale": scale,
+    backgroundColor: background,
+    height,
+    ...style,
+  };
+
+  return (
+    <div
+      className={`person-stage ${className}`.trim()}
+      style={stageStyle}
+      role="img"
+      aria-label="Illustration of a smiling person with blonde hair and blue glasses"
+    >
+      <div className="person">
+        <div className="person__head">
+          <div className="person__face" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Person;
