@@ -1,0 +1,179 @@
+/* ---------- Layout ---------- */
+
+.about {
+  position: relative;
+  height: 100vh;
+  background: #ffffff;
+  color: #000000;
+}
+
+.about__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 clamp(24px, 6vw, 96px);
+  /* extra space at the bottom lifts the centered content a little above the middle */
+  padding-bottom: 16vh;
+  box-sizing: border-box;
+  /* the person starts off-screen to the right; don't let it cause sideways scrolling */
+  overflow: hidden;
+}
+
+/* full-screen layer behind the text; the figure is centered in it, so moving
+   the layer sideways moves the figure. Resting position: peeking in from the
+   right edge (figure's center ~70px inside the edge, so part of it is cut off). */
+.about__person {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  transform: translateX(calc(50vw - 70px));
+}
+
+/* keep the text above the person */
+.about__kicker,
+.about__facts {
+  position: relative;
+  z-index: 1;
+}
+
+.about__kicker {
+  margin: 0 0 clamp(24px, 5vh, 56px);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.about__facts {
+  margin: 0;
+}
+
+.about__fact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: clamp(16px, 3vh, 32px) 0;
+}
+
+.about__label {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.about__value {
+  margin: 0;
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  font-size: clamp(44px, 9vw, 128px);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+/* school name (third fact) in orange */
+.about__fact--3 .about__value {
+  color: #e8590c;
+}
+
+/* ---------- Scroll animation ----------
+   Only in browsers that support scroll-driven animations, and only when the
+   visitor hasn't asked for reduced motion. Everywhere else the section is one
+   screen tall and the three facts are simply stacked and visible. */
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .about {
+      /* extra height = scroll distance for the animation */
+      height: 300vh;
+      view-timeline-name: --about;
+    }
+
+    /* put all three facts in the same spot so they can take turns */
+    .about__facts {
+      display: grid;
+    }
+    .about__fact {
+      grid-area: 1 / 1;
+    }
+
+    .about__kicker,
+    .about__fact {
+      animation-timeline: --about;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+    }
+
+    /* "contain" = the part of the scroll where the section fills the screen
+       (i.e. while it is pinned). Each fact owns one slice of it. */
+    .about__kicker {
+      animation-name: about-fade-in;
+      animation-range: contain 0% contain 10%;
+    }
+    .about__fact--1 {
+      animation-name: about-in-out;
+      animation-range: contain 0% contain 33%;
+    }
+    .about__fact--2 {
+      animation-name: about-in-out;
+      animation-range: contain 33% contain 66%;
+    }
+    /* person: peeks in from the right edge while the name shows */
+    .about__person {
+      animation: about-person-slide linear both;
+      animation-timeline: --about;
+      animation-range: contain 0% contain 33%;
+    }
+
+    /* the last fact fades in and stays */
+    .about__fact--3 {
+      animation-name: about-fade-in;
+      animation-range: contain 66% contain 80%;
+    }
+  }
+}
+
+@keyframes about-person-slide {
+  from {
+    /* fully hidden past the right edge */
+    transform: translateX(calc(50vw + 350px));
+  }
+  to {
+    transform: translateX(calc(50vw - 70px));
+  }
+}
+
+/* fade in, hold, fade out (upwards) */
+@keyframes about-in-out {
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  30%,
+  70% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+}
+
+@keyframes about-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
