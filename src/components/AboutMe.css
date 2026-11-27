@@ -114,6 +114,7 @@
   color: #2599d8; /* blue: the bottom band */
   font-family: "Oswald", sans-serif;
   text-transform: uppercase;
+  font-size: 10vw;
 }
 
 .about__stripe {
@@ -260,7 +261,7 @@
 @keyframes about-person-slide {
   from {
     /* fully hidden past the right edge */
-    transform: translateX(calc(50vw + 350px));
+    transform: translateX(calc(50vw + 360px));
   }
   to {
     transform: translateX(calc(50vw - 70px));
